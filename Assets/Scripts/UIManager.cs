@@ -6,12 +6,20 @@ namespace Games.Bingo
     using UnityEngine.UI;
     using DG.Tweening;
 
+#if GO4_CORE_APP
+    using Zenject;
+#endif
+
     public class UIManager : MonoBehaviour
     {
+#if GO4_CORE_APP
+    [Inject] private IConfigProvider _configProvider;
+    [Inject] private GO4CoreAppBridge _appBridge;
+#endif
         public static UIManager instance;
         public Color[] _Ball_textcolors, FillingColor;
         [SerializeField] GameObject MainMenue_Scr, IngameScr, Pause_Scr,Setting_Scr,Quit_Scr,Tut_Scr, Scr_SummaryScr;
-        public GameObject Empty_Panel, Timer_Red_Img, Ten_Anim;
+        public GameObject Empty_Panel, Timer_Red_Img, Ten_Anim, kioskInstructionGO;
         public Transform[] Anim;
         [SerializeField] Transform Canvas, Rew_Text_Anim, Reward_Destination, Particle_Main;
         public Text Info_text;
@@ -20,27 +28,33 @@ namespace Games.Bingo
         public bool isAnim = true;
         Coroutine _Cor;
         public static bool gotoUsedStatus;
+        public GameObject tutorialScreen;
+        public bool fromPlayButton = false;
+        public bool isTutorial;
+        public bool isHintFound;
+        public bool isNumberPassed;
+        public bool hasShownHintBefore = false;
+        public bool hasShownSkipHintBefore = false;
         private void Awake()
         {
             instance = this;
         }
-
-
         private void Start()
         {
+#if GO4_CORE_APP
+            _appBridge.Init(() => ScoreSummary.instance.BingoPlayerScore, () => Timer.Instance.totalTime);
+#endif
+
             soundManager = SoundManager.instance;
+            kioskInstructionGO.SetActive(false);
             Show_MainScr();
             AutoRandom.ResetSeed();
         }
-
-
         public void Show_MainScr()
         {
-
             En_Dis(MainMenue_Scr, true);
             En_Dis(Pause_Scr, false);
             En_Dis(Tut_Scr, false);
-
         }
         public void Show_scoreSummary()
         {
@@ -49,9 +63,7 @@ namespace Games.Bingo
             Pause_scr_off();
             Timer.Instance.isTime = false;
             StartCoroutine(Timer.Instance.TimeOut_Function());
-
         }
-
         public IEnumerator Show_Scrsummary()
         {
             yield return new WaitForSeconds(0f);
@@ -65,55 +77,76 @@ namespace Games.Bingo
             En_Dis(Quit_Scr, false);
             En_Dis(Scr_SummaryScr, true);
             Timer.Instance.isTime = false;
-
         }
         public void Show_PauseScr()
         {
-           
-            En_Dis(Setting_Scr, false);
-            En_Dis(Quit_Scr, false);
-            En_Dis(Tut_Scr, false);
-            SoundManager.instance.Bg_source.Pause();
-            Timer.Instance.OnPause_Timer(false);
-            soundManager.Show_Ticktick_audiosource(false);
-            En_Dis(Pause_Scr, true);
-
-            if (IngameScr.activeInHierarchy)
+            if (Input.touchCount > 0)
             {
-                Bingocardview.instance._Stop_Crntfiller_Tut(false);
+                if (!IngameScr.activeInHierarchy)
+                {
+                    En_Dis(Setting_Scr, false);
+                    Particle_Main.gameObject.SetActive(true);
+                    return;
+                }
+                En_Dis(Setting_Scr, false);
+                En_Dis(Quit_Scr, false);
+                En_Dis(Tut_Scr, false);
+                SoundManager.instance.Bg_source.Pause();
+                Timer.Instance.OnPause_Timer(false);
+                soundManager.Show_Ticktick_audiosource(false);
+                En_Dis(Pause_Scr, true);
+                if (IngameScr.activeInHierarchy)
+                {
+                    Bingocardview.instance._Stop_Crntfiller_Tut(false);
+                }
             }
-
         }
         public void Pause_scr_off()
         {
             Time.timeScale = 1;
-        
             Bingocardview.instance._Stop_Crntfiller_Tut(true);
-
             SoundManager.instance.Bg_source.Play();
             if (Timer.Instance.totalTime > 0 && Timer.Instance.totalTime < 15 && !IsGame_Finish)
             {
                 soundManager.Show_Ticktick_audiosource(true);
                 Timer.Instance.OnPause_Timer(true);
             }
-
-
-
             En_Dis(Pause_Scr, false);
         }
         public void Show_InGameScreen()
         {
-
-            En_Dis(MainMenue_Scr, false);
-            En_Dis(IngameScr, true);
+            if (Input.touchCount > 0)
+            {
+                fromPlayButton = true;
+                if ((JsonPrefs.GetInt("tutorial", 0) == 1))
+                {
+                    En_Dis(MainMenue_Scr, false);
+                    En_Dis(IngameScr, true);
+                }
+                else
+                {
+                    Particle_Main.gameObject.SetActive(false);
+                    En_Dis(Pause_Scr, false);
+                    En_Dis(Tut_Scr, true);
+                }
+#if GO4_CORE_APP
+                if (_configProvider.IsArcadeMode)
+                {
+                    kioskInstructionGO.SetActive(true);
+                }
+#endif
+            }
         }
         public void Show_Tut_scr()
         {
-            Particle_Main.gameObject.SetActive(false);
-            En_Dis(Pause_Scr,  false);
-            En_Dis(Tut_Scr,    true);
+            if (Input.touchCount > 0)
+            {
+                fromPlayButton = false;
+                Particle_Main.gameObject.SetActive(false);
+                En_Dis(Pause_Scr, false);
+                En_Dis(Tut_Scr, true);
+            }
         }
-
         public void Show_Quit_Scr()
         {
             En_Dis(Pause_Scr, false);
@@ -121,25 +154,31 @@ namespace Games.Bingo
         }
         public void Show_Setting_Scr()
         {
-            En_Dis(Pause_Scr, false);
-            En_Dis(Setting_Scr, true);
-        }
-
+            if (Input.touchCount > 0)
+            {
+                Particle_Main.gameObject.SetActive(false);
+                En_Dis(Pause_Scr, false);
+                En_Dis(Setting_Scr, true);
+            }
+            }
         public void Taturial_Close_Dec()
         {
-            if (!IngameScr.activeInHierarchy)
+                if (!IngameScr.activeInHierarchy)
             {
-
                 En_Dis(Tut_Scr, false);
             }
             else
             {
                 En_Dis(Pause_Scr, true);
                 En_Dis(Tut_Scr, false);
-
+            }
+            if (fromPlayButton)
+            {
+                JsonPrefs.SetInt("tutorial", 1);
+                En_Dis(MainMenue_Scr, false);
+                En_Dis(IngameScr, true);
             }
         }
-
         public void En_Dis(GameObject scr, bool ison)
         {
             scr.SetActive(ison);
@@ -160,7 +199,6 @@ namespace Games.Bingo
                 });
             }
         }
-
         public void Ten_Sec_anim()
         {
             if (!Ten_Anim.activeInHierarchy)
@@ -172,22 +210,16 @@ namespace Games.Bingo
         {
             if (isAnim)
             {
-
                 isAnim = false;
                 if (indx == 1)
                 {
                     soundManager._Bad_sndfx();
                 }
-
                 Anim[indx].gameObject.SetActive(true);
                 yield return new WaitForSeconds(1.5f);
                 isAnim = true;
             }
         }
-
-
-
-
         public void Spawn_Text(float Value, Transform strt_pos)
         {
             SoundManager.instance.Play_Vibration(20);
@@ -195,7 +227,6 @@ namespace Games.Bingo
             Text _text = Spwn.GetComponent<Text>();
             Spwn.SetParent(IngameScr.transform);
             Spwn.localScale = Vector3.one;
-
             Spwn.transform.DOScale(Spwn.transform.localScale + Vector3.one, 0.5f).SetLoops(2, LoopType.Yoyo);
             Vector3 pos = Reward_Destination.position;
             Spwn.position = strt_pos.position;
@@ -203,19 +234,18 @@ namespace Games.Bingo
             _text.text = "+" + Value;
             Spwn.DOMove(pos, 0.8f).SetDelay(0.12f).OnStart(() => { soundManager.Spawn_text_Fx(); }).OnComplete(() =>
             {
-
                 Destroy(Spwn.gameObject);
             });
         }
-
-
         public void Coloring(int indx, Text _text)
         {
-
             Color colorWithFullAlpha = new Color(_Ball_textcolors[indx].r, _Ball_textcolors[indx].g, _Ball_textcolors[indx].b, 1f);
             _text.color = colorWithFullAlpha;
         }
-
-
+        public void hideTutorial()
+        {
+             BingoInactivityManager.instance.ResetTimer();
+            tutorialScreen.SetActive(false);
+        }
     }
 }

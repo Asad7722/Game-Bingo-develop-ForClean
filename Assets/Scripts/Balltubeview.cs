@@ -246,14 +246,7 @@ namespace Games.Bingo
             yield return new WaitForSeconds(0.1f);
             }
 
-        }
-
-
-
-        public void _StopballAnim(bool Ison)
-        {
-           
-        }
+        } 
 
         public void Golden_Bingo_effect()
         {

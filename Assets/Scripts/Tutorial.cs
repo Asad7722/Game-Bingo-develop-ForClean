@@ -5,16 +5,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-
 public class Tutorial : MonoBehaviour
 {
     public GameObject[] images;
     public int count = 0;
-       
     private void OnEnable()
     {
         Atstart();
-      
         count = 0;
         images[count].SetActive(true);
          images[count].transform.DOLocalMoveX(0f,0.5f).SetEase(Ease.Linear);
@@ -23,8 +20,6 @@ public class Tutorial : MonoBehaviour
     {
          images[count].SetActive(false);
      }
-
-
     void Atstart()
     {
         for(int i=1;i< images.Length; i++)
@@ -41,7 +36,6 @@ public class Tutorial : MonoBehaviour
             images[a].SetActive(false);
         });
          count++;
-
         images[count].SetActive(true);
         images[count].transform.DOLocalMoveX(0f, 0.5f).SetEase(Ease.Linear);
      }

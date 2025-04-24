@@ -1,5 +1,4 @@
 using Zenject;
-
 namespace Games.Bingo
 {
     public class BingoContextInstaller : MonoInstaller<BingoContextInstaller>
@@ -11,7 +10,6 @@ namespace Games.Bingo
 #endif
             BindInterfaces();
         }
-
         private void BindInterfaces()
         {
 #if GO4_CORE_APP

@@ -5,7 +5,6 @@ namespace Games.Bingo
     using UnityEngine;
     using UnityEngine.UI;
     using DG.Tweening;
-
     public class GoldInstPowerup : MonoBehaviour
     {
         public Image[] Gold_btns;
@@ -14,12 +13,11 @@ namespace Games.Bingo
         public Image Instant_Bar, Golden_Image;
         Bingocardview bingocardview;
         [SerializeField] List<int> Get_rndm_no, All_No;
-      public  List<Bingoball> _Forinst_Ball;
+        public  List<Bingoball> _Forinst_Ball;
         bool auto_randm = false;
         Image gld_btn;
        public Balltubeview balltubeview;
         bool instant3 = false;
-
         private void OnEnable()
         {
             bingocardview = Bingocardview.instance;
@@ -28,9 +26,7 @@ namespace Games.Bingo
             {
                 Get_rndm_no.Clear();
             }
-
             Instant_BallinQueue();
-
             if (Instant_Bar != null)
             {
                 Instant_Bar.fillAmount = 1;
@@ -42,80 +38,58 @@ namespace Games.Bingo
                 Golden_Image.fillAmount = 1;
                 Golden_Image.DOFillAmount(0, 5f).SetEase(Ease.Linear).OnComplete(() =>
                 {
-
                     if (!auto_randm)
                     {
                         string text = Gold_btns[0].transform.GetChild(1).GetComponent<Text>().text;
                         int number = int.Parse(text);
                         Set_Golden_Instant(number, 0);
-                    
-
                     }
-
                 });
             }
-
             for (int i = 0; i < CardParent.instance.All_Btns.Count; i++)
             {
-
                 All_No.Add(CardParent.instance.All_Btns[i].Card_No);
                 all_cards.Add(CardParent.instance.All_Btns[i]);
-
-
             }
-
-
-           
             int instant_randm = AutoRandom.Range(0, 2);
             int rndm = 0;
-
-            for (int i = 0; i < 3; i++)
+            int goldenBallLimitCounter = 0;
+            if (CardParent.instance.All_Btns.Count > 2) {
+                goldenBallLimitCounter = 3;
+            }
+            else
             {
-
-
-
+                goldenBallLimitCounter = CardParent.instance.All_Btns.Count;
+            }
+            for (int i = 0; i < goldenBallLimitCounter; i++)
+            {
                 if (bingocardview.IsInstant3 && i > instant_randm)
                 {
-
-
                 Continue:
-
                     rndm = AutoRandom.Range(1, 76);
-                    
                     if (Get_rndm_no.Contains(rndm) || All_No.Contains(rndm) || CardParent.instance.Marked_Numbers.Contains(rndm))
                     {
                         goto Continue;
                     }
                     else
                     {
-
                         Get_rndm_no.Add(rndm);
                         Set_values(rndm, i);
                     }
-
-
                 }
                 else
                 {
-
-
                 Continue:
-
-                    
                     rndm = AutoRandom.Range(0, All_No.Count);
                     if (Get_rndm_no.Contains(rndm))
                     {
                         goto Continue;
                     }
                     else
-                    {
-
-
-                        Get_rndm_no.Add(All_No[rndm]);
+                    {  Get_rndm_no.Add(All_No[rndm]);
                         Set_values(All_No[rndm], i);
                         All_No.RemoveAt(rndm);
                     }
-
                 }
             }
         }
@@ -123,12 +97,10 @@ namespace Games.Bingo
         {
             if (instant3)
             {
-                
                 for (int inst = 0; inst < 3; inst++)
                 {
                     _Forinst_Ball[inst].Instant_BallEffect(Get_rndm_no[inst]);
                 }
-            
                 instant3 = false;
             }
         }
@@ -151,8 +123,6 @@ namespace Games.Bingo
                 }
             }
         }
-
-
         private void OnDisable()
         {
             Replace_Instant();
@@ -160,13 +130,16 @@ namespace Games.Bingo
             all_cards.Clear();
             All_No.Clear();
             balltubeview.check_Match_No = 0;
-
+            foreach(Image img in Gold_btns)
+            {
+                img.gameObject.SetActive(false);
+            }
         }
-
         public void Set_values(int Check_No, int btnindx)
         {
             int coloring_indx;
             gld_btn = Gold_btns[btnindx];
+            gld_btn.gameObject.SetActive(true);
             string Card_Letter;
             if (!Bingocardview.instance.IsInstant3)
             {
@@ -232,9 +205,6 @@ namespace Games.Bingo
             bingocardview.Power_Set_Gold_number = number;
  Image image = genreted_btn.GetComponent<Image>();
             bingocardview.GoldenDemo.sprite = image.sprite;
-
-
-
             Text txt0child, txt1child;
             txt0child = genreted_btn.transform.GetChild(0).GetComponent<Text>();
             txt1child = genreted_btn.transform.GetChild(1).GetComponent<Text>();
@@ -248,13 +218,6 @@ namespace Games.Bingo
             Goldtxt1child.text = Number;
             Goldtxt0child.color = colorWithFullAlpha;
             Goldtxt1child.color = colorWithFullAlpha;
-
-
-
         }
-
-
-
     }
 }
-

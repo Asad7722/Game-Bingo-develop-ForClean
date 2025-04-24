@@ -2,7 +2,6 @@ namespace Games.Bingo
 {
     using UnityEngine;
 using System.Collections;
-
 public class Vibration : MonoBehaviour
 {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -14,7 +13,6 @@ public class Vibration : MonoBehaviour
     public static AndroidJavaObject currentActivity;
     public static AndroidJavaObject vibrator;
 #endif
-
     public static void Vibrate()
         {
 #if UNITY_ANDROID || UNITY_IOS
@@ -24,11 +22,8 @@ public class Vibration : MonoBehaviour
             Handheld.Vibrate();
 #endif
     }
-
-
     public static void Vibrate(long milliseconds)
         {
-
 #if UNITY_ANDROID || UNITY_IOS
             if (isAndroid())
                 vibrator.Call("vibrate", milliseconds);
@@ -36,7 +31,6 @@ public class Vibration : MonoBehaviour
                 Handheld.Vibrate();
 #endif
         }
-
         public static void Vibrate(long[] pattern, int repeat)
         {
 #if UNITY_ANDROID || UNITY_IOS
@@ -46,12 +40,10 @@ public class Vibration : MonoBehaviour
             Handheld.Vibrate();
 #endif
     }
-
     public static bool HasVibrator()
     {
         return isAndroid();
     }
-
     public static void Cancel()
         {
 #if UNITY_ANDROID || UNITY_IOS
@@ -59,7 +51,6 @@ public class Vibration : MonoBehaviour
             vibrator.Call("cancel");
 #endif
     }
-
     private static bool isAndroid()
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
