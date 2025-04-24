@@ -51,11 +51,10 @@ public class BingoInactivityManager : MonoBehaviour
     }
     void Update()
     {
-        if ( Input.touchCount > 0)
-        {
+         
             if(UIManager.instance.isTutorial)
                 UIManager.instance.hideTutorial();
-        }
+         
     }
     private void OnTimeout()
     {

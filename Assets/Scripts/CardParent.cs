@@ -333,10 +333,9 @@ using DG.Tweening;
     }
     public void Onbingo_BtnPressed()
     {
-            if (Input.touchCount > 0)
-            {
+            
                 Check_Condition();
-            }
+            
     }
         public void ShowHint()
         {

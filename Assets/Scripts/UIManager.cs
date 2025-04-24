@@ -80,8 +80,7 @@ namespace Games.Bingo
         }
         public void Show_PauseScr()
         {
-            if (Input.touchCount > 0)
-            {
+             
                 if (!IngameScr.activeInHierarchy)
                 {
                     En_Dis(Setting_Scr, false);
@@ -99,7 +98,7 @@ namespace Games.Bingo
                 {
                     Bingocardview.instance._Stop_Crntfiller_Tut(false);
                 }
-            }
+            
         }
         public void Pause_scr_off()
         {
@@ -115,8 +114,7 @@ namespace Games.Bingo
         }
         public void Show_InGameScreen()
         {
-            if (Input.touchCount > 0)
-            {
+             
                 fromPlayButton = true;
                 if ((JsonPrefs.GetInt("tutorial", 0) == 1))
                 {
@@ -135,17 +133,16 @@ namespace Games.Bingo
                     kioskInstructionGO.SetActive(true);
                 }
 #endif
-            }
+            
         }
         public void Show_Tut_scr()
         {
-            if (Input.touchCount > 0)
-            {
+            
                 fromPlayButton = false;
                 Particle_Main.gameObject.SetActive(false);
                 En_Dis(Pause_Scr, false);
                 En_Dis(Tut_Scr, true);
-            }
+             
         }
         public void Show_Quit_Scr()
         {
@@ -154,12 +151,11 @@ namespace Games.Bingo
         }
         public void Show_Setting_Scr()
         {
-            if (Input.touchCount > 0)
-            {
+            
                 Particle_Main.gameObject.SetActive(false);
                 En_Dis(Pause_Scr, false);
                 En_Dis(Setting_Scr, true);
-            }
+             
             }
         public void Taturial_Close_Dec()
         {

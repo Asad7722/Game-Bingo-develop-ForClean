@@ -81,8 +81,7 @@ namespace Games.Bingo
         }
         public void Marked()
         {
-            if (Input.touchCount > 0)
-            {
+            
                 BingoInactivityManager.instance.ResetTimer();
                 if (Bingocardview.instance.IsInstant3)
                 {
@@ -161,7 +160,7 @@ namespace Games.Bingo
                             SoundManager.instance.Play_Vibration(40);
                         }
                     }
-                }
+               
             }
         }
         private void OnMouseDown()
