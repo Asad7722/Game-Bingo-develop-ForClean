@@ -43,7 +43,7 @@ namespace Games.Bingo
         }
         private void UpdateVibrationUI()
         {
-            vibrationToggleImage.sprite =isVibrationEnabled?VibrationOnImage:VibrationOffImage;
+            vibrationToggleImage.sprite = isVibrationEnabled?VibrationOnImage:VibrationOffImage;
         }
         public void At_startSnd()
         {

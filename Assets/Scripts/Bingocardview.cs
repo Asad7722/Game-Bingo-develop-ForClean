@@ -264,7 +264,7 @@ namespace Games.Bingo
                 timer.Timer_Powerup();
                 if (CardParent.instance.All_Btns.Count > 0)
                 {
-                    Balltubeview.instance._StopballAnim(false);
+                   
                     Balltubeview.instance.Replacing_Balls();
                     SoundManager.instance._PowerUp(1);
                     totalTime = 8;
@@ -311,7 +311,7 @@ namespace Games.Bingo
                 if (CardParent.instance.All_Btns.Count > 0)
                 {
                     Balltubeview.instance.Replacing_Instant();
-                    Balltubeview.instance._StopballAnim(false);
+                     
                     SoundManager.instance._PowerUp(2);
                     totalTime = 6;
                     _Current_filler_update(false);
