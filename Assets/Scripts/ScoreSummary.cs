@@ -7,7 +7,7 @@ namespace Games.Bingo
     using UnityEngine.UI;
     using UnityEngine.SceneManagement;
     using CodeStage.AntiCheat.ObscuredTypes;
-    using Zenject;
+ 
 
     public class ScoreSummary : MonoBehaviour
     {
@@ -31,17 +31,13 @@ namespace Games.Bingo
         [SerializeField] int[] _bingoscr;
         int final_scr, BonusTime_Value;
         [SerializeField] ObscuredInt bingoPlayerScore = 0;
-
-#if GO4_CORE_APP	
-        [Inject] private GO4CoreAppBridge _appBridge;
-#endif
-
+         
         public ObscuredInt BingoPlayerScore
         {
             get { return bingoPlayerScore; }
             set
             {
-                bingoPlayerScore = Mathf.Max(0, value); // Prevent negative scores
+                bingoPlayerScore = Mathf.Max(0, value);  
             }
         }
 
@@ -147,13 +143,9 @@ namespace Games.Bingo
         }
         public void Submit_Score()
         {
-            SoundManager.instance.Btn_clickSound();
-            
-#if GO4_CORE_APP
-            _appBridge.SubmitScoreAndReturnToCoreApp(BingoPlayerScore);
-#else
-            SceneManager.LoadScene("GameScene_Bingo");
-#endif
+   SoundManager.instance.Btn_clickSound();
+   SceneManager.LoadScene("GameScene_Bingo");
+ 
         }
         public void Score_Bonus()
         {

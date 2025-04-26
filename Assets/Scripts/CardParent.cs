@@ -360,7 +360,7 @@ namespace Games.Bingo
 
             UIManager.instance.isHintFound = foundHint;
 
-            // Start the tutorial coroutine for both cases
+           
             if (foundHint && !UIManager.instance.hasShownHintBefore)
             {
                 UIManager.instance.hasShownHintBefore = true;
@@ -386,7 +386,7 @@ namespace Games.Bingo
 
             AnimateHand(handTarget);
 
-            yield return new WaitForSeconds(3f); // Same delay for both
+            yield return new WaitForSeconds(3f);  
 
             tutorialScreen.SetActive(false);
         }

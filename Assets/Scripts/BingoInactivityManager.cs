@@ -50,9 +50,8 @@ public class BingoInactivityManager : MonoBehaviour
         StartInactivityTimer();
     }
     void Update()
-    {
-         
-            if(UIManager.instance.isTutorial)
+    { 
+        if(UIManager.instance.isTutorial)
                 UIManager.instance.hideTutorial();
          
     }

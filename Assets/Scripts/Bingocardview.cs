@@ -7,14 +7,10 @@ namespace Games.Bingo
     using UnityEngine.UI;
     using DG.Tweening;
 
-#if GO4_CORE_APP
-    using Zenject;
-#endif
+ 
     public class Bingocardview : MonoBehaviour
     {
-#if GO4_CORE_APP
-    [Inject] private IConfigProvider _configProvider;
-#endif
+ 
         public static Bingocardview instance;
         [SerializeField] Sprite[] Dubs_Sprites;
         [SerializeField] Image[] Dubs_Filler;
@@ -45,8 +41,8 @@ namespace Games.Bingo
         private void OnEnable()
         {
             Current_Filler = Dubs_Filler[0];
-#if GO4_CORE_APP
-        if (_configProvider.IsArcadeMode)
+ 
+        if (UIManager.instance.isKiosk)
         {
             ImageSlideAnimator.OnGameResumed += ImageSlideAnimator_OnGameResumed;
         }
@@ -55,20 +51,17 @@ namespace Games.Bingo
             ReadySteadyGO.SetActive(true);
             BingoCardViewGO.SetActive(true);
         }
-#endif
-#if UNITY_EDITOR
-        ReadySteadyGO.SetActive(true);
-        BingoCardViewGO.SetActive(true);
-#endif
+ 
+ 
         }
         private void OnDisable()
         {
-#if GO4_CORE_APP
-        if (_configProvider.IsArcadeMode)
+ 
+        if (UIManager.instance.isKiosk)
         {
             ImageSlideAnimator.OnGameResumed -= ImageSlideAnimator_OnGameResumed;
         }
-#endif
+ 
         }
         private void ImageSlideAnimator_OnGameResumed()
         {

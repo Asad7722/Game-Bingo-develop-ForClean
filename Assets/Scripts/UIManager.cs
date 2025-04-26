@@ -6,16 +6,11 @@ namespace Games.Bingo
     using UnityEngine.UI;
     using DG.Tweening;
 
-#if GO4_CORE_APP
-    using Zenject;
-#endif
+ 
 
     public class UIManager : MonoBehaviour
     {
-#if GO4_CORE_APP
-    [Inject] private IConfigProvider _configProvider;
-    [Inject] private GO4CoreAppBridge _appBridge;
-#endif
+ 
         public static UIManager instance;
         public Color[] _Ball_textcolors, FillingColor;
         [SerializeField] GameObject MainMenue_Scr, IngameScr, Pause_Scr,Setting_Scr,Quit_Scr,Tut_Scr, Scr_SummaryScr;
@@ -35,16 +30,13 @@ namespace Games.Bingo
         public bool isNumberPassed;
         public bool hasShownHintBefore = false;
         public bool hasShownSkipHintBefore = false;
+        public bool isKiosk;
         private void Awake()
         {
             instance = this;
         }
         private void Start()
-        {
-#if GO4_CORE_APP
-            _appBridge.Init(() => ScoreSummary.instance.BingoPlayerScore, () => Timer.Instance.totalTime);
-#endif
-
+        { 
             soundManager = SoundManager.instance;
             kioskInstructionGO.SetActive(false);
             Show_MainScr();
@@ -127,13 +119,13 @@ namespace Games.Bingo
                     En_Dis(Pause_Scr, false);
                     En_Dis(Tut_Scr, true);
                 }
-#if GO4_CORE_APP
-                if (_configProvider.IsArcadeMode)
+ 
+                if (isKiosk)
                 {
                     kioskInstructionGO.SetActive(true);
                 }
-#endif
-            
+ 
+
         }
         public void Show_Tut_scr()
         {
